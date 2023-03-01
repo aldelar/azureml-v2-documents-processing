@@ -22,7 +22,7 @@ def run(mini_batch):
 		for i, image in enumerate(images):
 			png_file_name = os.path.basename(pdf_file).replace(".pdf", f"_{i}.png")
 			image.save(os.path.join(png_folder_path, png_file_name), "PNG")
-		results.append(pdf_file,'converted')
+		results.append(pdf_file)
 	return pd.DataFrame(results)
 
 # local unit test

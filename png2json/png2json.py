@@ -38,5 +38,5 @@ def run(mini_batch):
 		json_file_name = os.path.basename(png_file).replace(".png", ".json")
 		with open(os.path.join(json_folder_path, json_file_name), "w") as json_file:
 			json_file.write(result.serialize())
-		results.append(png_file,'converted')
+		results.append(png_file)
 	return pd.DataFrame(results)
