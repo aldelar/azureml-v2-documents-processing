@@ -14,6 +14,7 @@ COGNITIVE_SERVICES_API_KEY = os.getenv("COGNITIVE_SERVICES_API_KEY")
 
 #
 def init():
+	print("png2json.init()")
 	# retrieve output from arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--json_folder", type=str)
@@ -28,9 +29,10 @@ def init():
 
 #
 def run(mini_batch):
+	print(f"png2json.run({mini_batch})")
 	results = []
 	for png_file in mini_batch:
-		print(f"Converting {png_file} to JSON")
+		print(f"Converting {png_file} to JSON...")
 		with open(png_file, "rb") as png:
 			document = png.read()
 		poller = document_analysis_client.begin_analyze_document("prebuilt-document", document)
