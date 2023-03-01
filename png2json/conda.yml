@@ -6,6 +6,7 @@ dependencies:
 - python=3.8
 - pip:
   - azureml-core
+  - azureml-dataprep
   - azureml-dataset-runtime[pandas,fuse]
   - azureml-telemetry
   - azure-ai-formrecognizer

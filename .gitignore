@@ -1,8 +1,7 @@
 #
 png2json/.env
-
-#
-mlruns/
+datalake/png
+datalake/json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
