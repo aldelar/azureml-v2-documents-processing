@@ -1,0 +1,14 @@
+name: amlv2-dp-png2json
+channels:
+- conda-forge
+dependencies:
+- pip
+- python=3.8
+- pip:
+  - azureml-core
+  - azureml-dataset-runtime[pandas,fuse]
+  - azureml-telemetry
+  - azure-ai-formrecognizer
+  - numpy
+  - pandas
+  - python-dotenv

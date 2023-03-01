@@ -1,0 +1,73 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+display_name: amlv2_documents_processing
+
+jobs:
+
+  pdf2png:
+    type: parallel
+    compute: azureml:cpu-cluster
+    inputs:
+      pdf_folder:
+        type: uri_folder
+        mode: ro_mount
+        path: azureml://datastores/datalake/paths/amlv2_dp_pdf
+    outputs:
+      png_folder:
+        type: uri_folder
+        mode: rw_mount
+        path: azureml://datastores/datalake/paths/amlv2_dp_png
+      log_file:
+        type: uri_file
+        mode: rw_mount
+        path: azureml://datastores/datalake/paths/amlv2_dp_logs/pdf2png.log
+    input_data: ${{inputs.pdf_folder}}
+    resources:
+      instance_count: 1
+    max_concurrency_per_instance: 4
+    logging_level: "DEBUG"
+    mini_batch_error_threshold: 1
+    retry_settings:
+      max_retries: 1
+      timeout: 600
+    task:
+      type: run_function
+      code: pdf2png
+      entry_script: pdf2png.py
+      environment: azureml:amlv2-dp-pdf2png@latest
+      program_arguments: --png_folder ${{outputs.png_folder}}
+      append_row_to: ${{outputs.log_file}}
+
+  png2json:
+    type: parallel
+    compute: azureml:cpu-cluster
+    inputs:
+      png_folder:
+        type: uri_folder
+        mode: ro_mount
+        path: ${{parent.jobs.pdf2png.outputs.png_folder}}
+    outputs:
+      json_folder:
+        type: uri_folder
+        mode: rw_mount
+        path: azureml://datastores/datalake/paths/amlv2_dp_json
+      log_file:
+        type: uri_file
+        mode: rw_mount
+        path: azureml://datastores/datalake/paths/amlv2_dp_logs/png2json.log
+    input_data: ${{inputs.png_folder}}
+    resources:
+      instance_count: 8
+    max_concurrency_per_instance: 4
+    logging_level: "DEBUG"
+    mini_batch_error_threshold: 1
+    retry_settings:
+      max_retries: 3
+      timeout: 120
+    task:
+      type: run_function
+      code: png2json
+      entry_script: png2json.py
+      environment: azureml:amlv2-dp-png2json@latest
+      program_arguments: --json_folder ${{outputs.json_folder}}
+      append_row_to: ${{outputs.log_file}}
